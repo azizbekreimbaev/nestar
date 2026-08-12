@@ -1,4 +1,9 @@
 import { Module } from '@nestjs/common';
+import { MemberResolver } from './member.resolver';
+import { MemberService } from './member.service';
 
-@Module({})
-export class MemberModule {}
+@Module({
+    imports: [],
+    providers: [MemberResolver, MemberService]
+})
+export class MemberModule { }
