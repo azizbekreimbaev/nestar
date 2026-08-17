@@ -19,7 +19,7 @@ import { T } from './libs/types/common';
       autoSchemaFile: true,
       formatError: (errors: T) => {
         const graphQLFormattedError = {
-          extensions: { code: errors?.extensions?.code },
+          extensions: { code: errors?.extensions?.code },  // BOSHQA YAXSHIROQ VARIANT TOPILMADI
           message: errors?.extensions?.exception?.response?.message || errors?.extensions?.response?.message || errors?.message,
         };
         console.log("GRAPHQL GLOBAL ERROR", graphQLFormattedError)
