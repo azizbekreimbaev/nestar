@@ -9,12 +9,15 @@ import { ComponentsModule } from './components/components.module';
 import { DatabaseModule } from './database/database.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), GraphQLModule.forRoot({
-    driver: ApolloDriver,
-    playground: true,
-    uploads: false,
-    autoSchemaFile: true
-  }), ComponentsModule, DatabaseModule],
+  imports: [
+    ConfigModule.forRoot(),
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      playground: true,
+      uploads: false,
+      autoSchemaFile: true
+
+    }), ComponentsModule, DatabaseModule],
   controllers: [AppController],
   providers: [AppService, AppResolver],
 })
