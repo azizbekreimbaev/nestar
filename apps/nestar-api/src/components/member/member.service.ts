@@ -18,8 +18,8 @@ export class MemberService {
             return result
 
         } catch (err) {
-            console.log("ERROR on signup service model", err)
-            throw new BadRequestException(err)
+            console.log("ERROR on signup service model", err instanceof Error ? err.message : err)
+            throw new BadRequestException(Message.USED_MEMBER_NICK_OR_PHONE)
         }
 
     }
@@ -50,7 +50,7 @@ export class MemberService {
 
         } catch (err) {
 
-            console.log("ERROR on signup service model", err)
+            console.log("ERROR on login service model", err)
             throw new BadRequestException(err)
         }
 
