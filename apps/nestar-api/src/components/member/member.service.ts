@@ -5,14 +5,18 @@ import { Member } from '../../libs/dto/member/member';
 import { LoginInput, MemberInput } from '../../libs/dto/member/member.input';
 import { MemberStatus } from '../../libs/enums/member.enum';
 import { Message } from '../../libs/enums/common.enum';
+import { AuthService } from '../auth/auth.service';
 @Injectable()
 export class MemberService {
 
-    constructor(@InjectModel("Member") private readonly memberModel: Model<Member>) { }
+    constructor(@InjectModel("Member") private readonly memberModel: Model<Member>,
+        private authService: AuthService) { }
 
     public async signup(input: MemberInput): Promise<Member> {
         try {
-            //HASHING
+
+            input.memberPassword = await this.authService.hashPassword(input.memberPassword)
+
             const result = await this.memberModel.create(input)
             // AUTHENTICATION TOKENS
             return result
@@ -28,7 +32,8 @@ export class MemberService {
         try {
 
             const { memberNick, memberPassword } = input
-            const result = await this.memberModel.findOne({ memberNick: memberNick }).select("+memberPassword").exec()
+            const result = await this.memberModel.findOne({ memberNick: memberNick })
+                .select("+memberPassword").exec()
 
 
             if (!result || result.memberStatus === MemberStatus.DELETE) {
@@ -39,7 +44,8 @@ export class MemberService {
 
             // BSCRYPT COMPARING PASSWORD
 
-            const isMatch = memberPassword === result.memberPassword
+            const isMatch = await this.authService
+                .comparePasswords(input.memberPassword, result.memberPassword)
 
             if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD)
 
