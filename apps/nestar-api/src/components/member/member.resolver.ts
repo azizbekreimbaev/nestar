@@ -38,7 +38,7 @@ export class MemberResolver {
 
     @UseGuards(AuthGuard)
     @Query(() => String)
-    public async chechAuth(@AuthMember("memberNick") memberNick: string): Promise<String> {
+    public async checkAuth(@AuthMember("memberNick") memberNick: string): Promise<String> {
         console.log("DATA", memberNick)
         return `hi ${memberNick}`
     }
@@ -53,7 +53,7 @@ export class MemberResolver {
     @UseGuards(RolesGuard)
     @UseGuards(AuthGuard)
     @Query(() => String)
-    public async chechAuthRoles(@AuthMember() authMember: Member): Promise<String> {
+    public async checkAuthRoles(@AuthMember() authMember: Member): Promise<String> {
         return `hi ${authMember.memberNick}, you are ${authMember.memberType}`
     }
 
