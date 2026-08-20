@@ -75,4 +75,17 @@ export class MemberService {
         return "GTEMEMBER PAGE"
     }
 
+    /**ADMIN */
+
+
+    public async getAllMembersByAdmin(): Promise<String> {
+        return "MUTATION getAllMembersByAdmin BY ADMIN"
+    }
+
+    public async updateMemberByAdmin(): Promise<String> {
+        return "MUTATION updateMemberByAdmin BY ADMIN"
+    }
+
+
+
 }
