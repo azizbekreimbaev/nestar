@@ -105,7 +105,7 @@ const MemberSchema = new Schema({
         default: 0
     },
 
-    memberWarning: {
+    memberWarnings: {
         type: Number,
         default: 0
     },
