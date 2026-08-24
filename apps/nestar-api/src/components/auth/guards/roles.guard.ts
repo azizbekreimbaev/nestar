@@ -12,6 +12,7 @@ export class RolesGuard implements CanActivate {
 
 	async canActivate(context: ExecutionContext | any): Promise<boolean> {
 		const roles = this.reflector.get<string[]>('roles', context.getHandler());
+		console.log("ROLES", roles)
 		if (!roles) return true;
 
 		console.info(`--- @guard() Authentication [RolesGuard]: ${roles} ---`);
@@ -25,6 +26,7 @@ export class RolesGuard implements CanActivate {
 				authMember = await this.authService.verifyAuth(token),
 				hasRole = () => roles.indexOf(authMember.memberType) > -1,
 				hasPermission: boolean = hasRole();
+			console.log("HASROLE", hasRole)
 
 			if (!authMember || !hasPermission) throw new ForbiddenException(Message.ONLY_SPECIFIC_ROLES_ALLOWED);
 

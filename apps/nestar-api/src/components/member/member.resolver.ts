@@ -9,6 +9,7 @@ import type { ObjectId } from 'mongoose';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { MemberType } from '../../libs/enums/member.enum';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { MemberUpdate } from '../../libs/dto/member/member.update';
 
 @Resolver()
 export class MemberResolver {
@@ -28,20 +29,34 @@ export class MemberResolver {
     }
 
     @UseGuards(AuthGuard)
-    @Mutation(() => String)
-    public async updateMember(@AuthMember("_id") memberId: ObjectId): Promise<String> {
-        console.log("updateMember")
-        console.log("DATA", memberId)
-        return this.memberService.updateMember()
-    }
-
-
-    @UseGuards(AuthGuard)
     @Query(() => String)
-    public async checkAuth(@AuthMember("memberNick") memberNick: string): Promise<String> {
+    public async chechAuth(@AuthMember("memberNick") memberNick: string): Promise<String> {
         console.log("DATA", memberNick)
         return `hi ${memberNick}`
     }
+
+    @Roles(MemberType.AGENT, MemberType.USER)
+    @UseGuards(RolesGuard)
+    @UseGuards(AuthGuard)
+    @Query(() => String)
+    public async chechAuthRoles(@AuthMember() authMember: Member): Promise<String> {
+        return `hi ${authMember.memberNick}, you are ${authMember.memberType}, your id is ${authMember._id}`
+    }
+
+
+
+
+    @UseGuards(AuthGuard)
+    @Mutation(() => Member)
+    public async updateMember(
+        @Args("input") input: MemberUpdate,
+        @AuthMember("_id") memberId: ObjectId): Promise<Member> {
+        console.log("updateMember")
+        delete input._id
+        return this.memberService.updateMember(memberId, input)
+    }
+
+
 
     @Query(() => String)
     public async getMember(): Promise<String> {
@@ -49,13 +64,6 @@ export class MemberResolver {
         return this.memberService.getMember()
     }
 
-    @Roles(MemberType.AGENT, MemberType.USER)
-    @UseGuards(RolesGuard)
-    @UseGuards(AuthGuard)
-    @Query(() => String)
-    public async checkAuthRoles(@AuthMember() authMember: Member): Promise<String> {
-        return `hi ${authMember.memberNick}, you are ${authMember.memberType}`
-    }
 
 
     /**ADMIN */
