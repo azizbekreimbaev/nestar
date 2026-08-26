@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from "@nestjs/graphql";
-import { IsIn, IsInt, IsNotEmpty, IsOptional, Length, Min } from "class-validator";
+import { IsIn, IsInt, isNotEmpty, IsNotEmpty, IsOptional, Length, Min } from "class-validator";
 import { PropertyLocation, PropertyType } from "../../enums/property.enum";
 import type { ObjectId } from "mongoose";
 
@@ -68,7 +68,6 @@ export class PropertyInput {
     @IsOptional()
     @Field(() => Date, { nullable: true })
     constructedAt?: Date
-
 
 
 }
