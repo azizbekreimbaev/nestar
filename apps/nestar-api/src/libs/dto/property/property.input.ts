@@ -20,12 +20,12 @@ export class PropertyInput {
     @IsNotEmpty()
     @Length(3, 100)
     @Field(() => String)
-    propertyAddress!: PropertyType
+    propertyAddress!: string
 
     @IsNotEmpty()
     @Length(3, 100)
     @Field(() => String)
-    propertyTitle!: PropertyType
+    propertyTitle!: string
 
     @IsNotEmpty()
     @Field(() => Number)

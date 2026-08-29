@@ -59,7 +59,6 @@ export class MemberService {
 
             if (!isMatch) throw new InternalServerErrorException(Message.WRONG_PASSWORD)
 
-            delete result.memberPassword
 
             result.accessToken = await this.authService.createToken(result)
 
@@ -71,7 +70,6 @@ export class MemberService {
             console.log("ERROR on login service model", err)
             throw new BadRequestException(err)
         }
-
 
     }
 
