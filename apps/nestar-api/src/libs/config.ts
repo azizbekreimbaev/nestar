@@ -37,6 +37,7 @@ export const availablePropertySorts = [
     'propertyPrice',
 ];
 
+export const availableBoardArticleSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews']
 
 export const lookupMember = {
     $lookup: {
