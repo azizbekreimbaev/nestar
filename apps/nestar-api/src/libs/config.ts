@@ -39,6 +39,8 @@ export const availablePropertySorts = [
 
 export const availableBoardArticleSorts = ['createdAt', 'updatedAt', 'articleLikes', 'articleViews']
 
+export const availableCommentSorts = ['createdAt', 'updatedAt']
+
 export const lookupMember = {
     $lookup: {
         from: 'members',
