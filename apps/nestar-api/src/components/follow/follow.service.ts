@@ -18,7 +18,7 @@ export class FollowService {
 
 
     public async subscribe(followerId: ObjectId, followingId: ObjectId): Promise<Follower> {
-        if (followerId.toString() === followingId.toString()) {
+        if (followerId.toString() === followingId.toString()) {//?
             throw new InternalServerErrorException(Message.SELF_SUBSCRIPTION_DENIED);
         }
 
