@@ -4,6 +4,12 @@ import { Model } from 'mongoose';
 import { View } from '../../libs/dto/view/view';
 import { ViewInput } from '../../libs/dto/view/view.input';
 import { T } from '../../libs/types/common';
+import type { ObjectId } from 'mongoose';
+import { lookupFavorite, lookupVisit } from '../../libs/config';
+import { Properties } from '../../libs/dto/property/property';
+import { OrdinaryInquiry } from '../../libs/dto/property/property.input';
+import { LikeGroup } from '../../libs/enums/like.enum';
+import { ViewGroup } from '../../libs/enums/view.enum';
 
 @Injectable()
 export class ViewService {
@@ -33,5 +39,55 @@ export class ViewService {
         return await this.viewModel.findOne(search).exec()
 
     }
+
+    public async getVisitedProperties(memberId: ObjectId, inqut: OrdinaryInquiry): Promise<Properties> {
+        const { page, limit } = inqut
+
+        const match: T = { viewGroup: ViewGroup.PROPERTY, memberId: memberId }
+
+        const data: T = await this.viewModel.aggregate([
+            { $match: match },
+            { $sort: { updatedAt: -1 } },
+
+            {
+                $lookup: {
+                    from: "properties",
+                    localField: "viewRefId",
+                    foreignField: "_id",
+                    as: "visitedProperty"
+                }
+            },
+
+            {
+                $unwind: "$visitedProperty"
+            },
+
+            {
+                $facet: {
+                    list: [
+                        { $skip: (page - 1) * limit },
+                        { $limit: limit },
+
+                        lookupVisit,
+                        { $unwind: "$visitedProperty.memberData" }
+                    ],
+                    metaCounter: [{ $count: "total" }]
+                }
+            }
+
+
+        ]).exec()
+
+        console.log("data", data)
+
+        const result: Properties = { list: [], metaCounter: data[0].metaCounter }
+
+        result.list = data[0].list.map((ele) => ele.visitedProperty)
+        console.log("result", result)
+
+        return result
+
+    }
+
 
 }
