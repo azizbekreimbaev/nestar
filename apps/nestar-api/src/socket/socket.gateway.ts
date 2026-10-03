@@ -1,6 +1,18 @@
 import { Logger } from '@nestjs/common';
-import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
+import { SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'ws';
+import * as WebSocket from "ws"
+
+interface MessagePayload {
+  event: string;
+  text: string;
+}
+
+interface InfoPayload {
+  event: string;
+  totalClients: number;
+}
+
 
 @WebSocketGateway({ transports: ['websocket'], secure: false })
 export class SocketGateway {
@@ -8,23 +20,70 @@ export class SocketGateway {
   private summaryClient: number = 0
 
 
+  @WebSocketServer()
+  server!: Server;
+
+
   public afterInit(server: Server) {
-    this.logger.log(`WevSocket Server Initialized total: ${this.summaryClient}`)
+    this.logger.verbose(`WevSocket Server Initialized && total: [${this.summaryClient}]`)
   }
 
   handleConnection(client: WebSocket, ...args: any[]) {
     this.summaryClient++;
-    this.logger.log(`== Client conected total: ${this.summaryClient} ==`)
+    this.logger.verbose(`Connection && total: [${this.summaryClient}]`)
+
+    const infoMsg: InfoPayload = {
+      event: "info",
+      totalClients: this.summaryClient
+    }
+
+    this.emitMessage(infoMsg)
+
   }
 
   handleDisconnect(client: WebSocket) {
     this.summaryClient--;
-    this.logger.log(`== Client disconnect left total: ${this.summaryClient} ==`)
+    this.logger.verbose(`DisConnection && total: [${this.summaryClient}]`)
+
+    const infoMsg: InfoPayload = {
+      event: "info",
+      totalClients: this.summaryClient
+    }
+
+    //client chiqib ketgan user boladi
+
+    this.broadcastMessage(client, infoMsg)
   }
 
 
   @SubscribeMessage('message')
-  handleMessage(client: any, payload: any): string {
-    return 'Hello world!';
+  public async handleMessage(client: any, payload: string): Promise<void> {
+    const newMessage: MessagePayload = {
+      event: "message",
+      text: payload
+    }
+
+    this.logger.verbose(`NEW MESSAGE: ${payload}`)
+    this.emitMessage(newMessage)
+
+  }
+
+
+
+  private broadcastMessage(sender: WebSocket, message: InfoPayload | MessagePayload) {
+    this.server.clients.forEach((client) => {
+      if (client !== sender && client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(message))
+      }
+    })
+  }
+
+
+  private emitMessage(message: InfoPayload | MessagePayload) {
+    this.server.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(message))
+      }
+    })
   }
 }
