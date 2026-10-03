@@ -35,6 +35,7 @@ export class MemberService {
             input.memberPassword = await this.authService.hashPassword(input.memberPassword)
 
             const result = await this.memberModel.create(input)
+            
             // AUTHENTICATION TOKENS
             result.accessToken = await this.authService.createToken(result)
             console.log("accessToken", result)
