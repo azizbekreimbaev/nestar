@@ -1,0 +1,8 @@
+[
+  "CONFIRMED: public MemberInput validation and signup service preserve ADMIN role (mock model).",
+  "CONFIRMED: self-update forwards ADMIN and plaintext password to model unchanged.",
+  "CONFIRMED: SOLD update does not include soldAt in database update.",
+  "CONFIRMED: nested property options bypass class-validator allowlist.",
+  "CONFIRMED: empty options generates $or: [].",
+  "CONFIRMED: uploader path construction can resolve outside uploads; no files written."
+]
