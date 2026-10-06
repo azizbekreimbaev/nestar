@@ -78,7 +78,7 @@ export class SocketGateway {
 
     //CLIENT Messags
 
-    client.send(JSON.stringify({ event: 'getMessags', list: this.messagesList }))
+    client.send(JSON.stringify({ event: 'getMessages', list: this.messagesList }))
 
   }
 
